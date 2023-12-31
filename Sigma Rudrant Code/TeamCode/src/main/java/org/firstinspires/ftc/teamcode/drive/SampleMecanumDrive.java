@@ -72,8 +72,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     private TrajectoryFollower follower;
 
-    private DcMotorEx leftFront, leftRear, rightRear, rightFront, slider;
-    private Servo RightGrabber, LeftGrabber, Adjust, LeftArm, RightArm;
+    private DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private List<DcMotorEx> motors;
 
     private IMU imu;
@@ -106,13 +105,13 @@ public class SampleMecanumDrive extends MecanumDrive {
         leftRear = hardwareMap.get(DcMotorEx.class, "LB");
         rightRear = hardwareMap.get(DcMotorEx.class, "RB");
         rightFront = hardwareMap.get(DcMotorEx.class, "RF");
-        slider= hardwareMap.get(DcMotorEx.class,"lifter");
 
-        RightGrabber = hardwareMap.get(Servo.class, "FG");
-        LeftGrabber = hardwareMap.get(Servo.class, "BG");
-        LeftArm = hardwareMap.get(Servo.class, "LA");
-        RightArm = hardwareMap.get(Servo.class, "RA");
-        Adjust = hardwareMap.get(Servo.class, "adjust");
+
+        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
@@ -125,7 +124,6 @@ public class SampleMecanumDrive extends MecanumDrive {
         if (RUN_USING_ENCODER) {
             setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
-
         setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
@@ -135,10 +133,6 @@ public class SampleMecanumDrive extends MecanumDrive {
         // TODO: reverse any motors using DcMotor.setDirection()
         leftFront.setDirection(DcMotorEx.Direction.REVERSE); // add if needed
         leftRear.setDirection(DcMotorEx.Direction.REVERSE); // add if needed
-        slider.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        LeftArm.setDirection(Servo.Direction.REVERSE);
-        RightGrabber.setDirection(Servo.Direction.REVERSE);
 
         List<Integer> lastTrackingEncPositions = new ArrayList<>();
         List<Integer> lastTrackingEncVels = new ArrayList<>();
@@ -327,56 +321,4 @@ public class SampleMecanumDrive extends MecanumDrive {
     public static TrajectoryAccelerationConstraint getAccelerationConstraint(double maxAccel) {
         return new ProfileAccelerationConstraint(maxAccel);
     }
-
-    public void InitServo() {
-        LeftArm.setPosition(0.02);
-        RightArm.setPosition(0.02);
-        Adjust.setPosition(0.02);
-        RightGrabber.setPosition(0.8);
-        LeftGrabber.setPosition(0.8);
-
-    }
-
-    public void ArmDropping(double LA_POS, double RA_POS) {
-
-        double  LA = LA_POS;
-        double RA = RA_POS;
-
-        LeftArm.setPosition(LA);
-        RightArm.setPosition(RA);
-
-    }
-    public void PurplePixelDrop(double RG_POS) {
-
-        double  RG = RG_POS;
-
-        RightGrabber.setPosition(RG);
-    }
-    public void PurplePixelclose(){
-
-        RightGrabber.setPosition(0.8);
-    }
-    public void sliderUp(){
-        slider.setPower(0.5);
-    }
-    public void sliderDown(){
-        slider.setPower(0);
-    }
-    public void sliderZero(){
-        slider.setPower(0);
-    }
-
-    public void adjustDrop(){
-        Adjust.setPosition(0.1);
-    }
-    public void YellowPixelDrop(double LG_POS) {
-
-        double  LG = LG_POS;
-
-
-        LeftGrabber.setPosition(LG);
-
-
-    }
-
 }
